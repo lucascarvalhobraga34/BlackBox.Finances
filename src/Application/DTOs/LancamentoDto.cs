@@ -2,7 +2,7 @@
 {
     public class LancamentoDto
     {
-        public DateTime Data { get; set; }
+        public DateTime DataLancamento { get; set; }
         public string Descricao { get; set; } = string.Empty;
         public decimal Valor { get; set; }
         public int? NumeroParcela { get; set; }

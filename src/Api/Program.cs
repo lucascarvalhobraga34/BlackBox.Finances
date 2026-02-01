@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.UseCases.ImportarFatura;
+using FluentValidation;
 using Infrastructure.Parsers;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
@@ -15,13 +16,18 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+options.UseSqlServer("Server=localhost;Database=BlackBox;Trusted_Connection=True;TrustServerCertificate=True;"));
 
-builder.Services.AddScoped<ILancamentoCartaoRepository, LancamentoCartaoRepository>();
+builder.Services.AddScoped<ILancamentoFaturaRepository, LancamentoFaturaRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<ICartaoRepository, CartaoRepository>();
+builder.Services.AddScoped<IFaturaRepository, FaturaRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IFaturaParserFactory, FaturaParserFactory>();
 builder.Services.AddScoped<ImportarFaturaHandler>();
+
+builder.Services.AddValidatorsFromAssembly(typeof(ImportarFaturaValidator).Assembly);
 
 builder.Services.AddMediatR(cfg =>
 {

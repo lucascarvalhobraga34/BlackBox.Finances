@@ -1,5 +1,5 @@
-﻿using Application.UseCases.ImportarFatura;
-using Domain.Enums;
+﻿using Api.Contracts;
+using Application.UseCases.ImportarFatura;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,19 +18,18 @@ namespace Api.Controllers
 
         [HttpPost("importar")]
         public async Task<IActionResult> Importar(
-            IFormFile arquivo,
-            TipoFatura tipo)
+            [FromForm] ImportarFaturaRequest request)
         {
-            if (arquivo is null || arquivo.Length == 0)
-                return BadRequest("Arquivo inválido");
+            using var arquivoFatura = request.Arquivo.OpenReadStream();
 
-            using var stream = arquivo.OpenReadStream();
-
-            var command = new ImportarFaturaCommand(stream, tipo);
+            var command = new ImportarFaturaCommand(request.MesAno, request.CodigoBanco, arquivoFatura);
 
             var result = await _mediator.Send(command);
 
-            return Ok(result);
+            if (result.IsFailure)
+                return BadRequest(new { errors = result.Errors});
+
+            return Ok(result.Value);
         }
     }
 }

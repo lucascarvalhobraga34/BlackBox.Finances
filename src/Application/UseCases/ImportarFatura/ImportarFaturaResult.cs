@@ -8,7 +8,7 @@ namespace Application.UseCases.ImportarFatura
         public int TotalLancamentos { get; }
         public IReadOnlyCollection<LancamentoDto> Lancamentos { get; }
 
-        public ImportarFaturaResult(IEnumerable<LancamentoCartao> lancamentos)
+        public ImportarFaturaResult(IEnumerable<LancamentoFatura> lancamentos)
         {
             var lista = lancamentos.ToList();
 
@@ -16,11 +16,11 @@ namespace Application.UseCases.ImportarFatura
 
             Lancamentos = lista.Select(l => new LancamentoDto
             {
-                Data = l.Data,
+                DataLancamento = l.DataLancamento,
                 Descricao = l.Descricao,
                 Valor = l.Valor,
-                NumeroParcela = l.Parcela?.Numero,
-                TotalParcelas = l.Parcela?.Total
+                NumeroParcela = l.NumeroParcela,
+                TotalParcelas = l.TotalParcelas
             }).ToList();
         }
     }

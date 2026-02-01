@@ -4,6 +4,6 @@ namespace Application.Interfaces
 {
     public interface IFaturaParser
     {
-        List<LancamentoCartao> Parse(Stream arquivo);
+        List<LancamentoFatura> Parse(Fatura fatura, string mesAno, Stream arquivo);
     }
 }

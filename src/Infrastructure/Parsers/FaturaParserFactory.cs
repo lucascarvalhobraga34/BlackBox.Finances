@@ -7,11 +7,11 @@ namespace Infrastructure.Parsers
 {
     public class FaturaParserFactory : IFaturaParserFactory
     {
-        public IFaturaParser Create(TipoFatura tipo) =>
+        public IFaturaParser Create(CodigoBanco tipo) =>
         tipo switch
         {
-            TipoFatura.Nubank => new NubankCsvParser(),
-            TipoFatura.Bmg => new BmgPdfParser(),
+            CodigoBanco.Nubank => new NubankCsvParser(),
+            CodigoBanco.BancoBmg => new BmgPdfParser(),
             _ => throw new NotSupportedException()
         };
     }

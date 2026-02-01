@@ -4,6 +4,6 @@ namespace Application.Interfaces
 {
     public interface IFaturaParserFactory
     {
-        IFaturaParser Create(TipoFatura tipo);
+        IFaturaParser Create(CodigoBanco tipo);
     }
 }

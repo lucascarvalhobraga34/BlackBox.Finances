@@ -13,7 +13,7 @@ namespace Infrastructure.Parsers.Nubank
          new Regex(@"(?<!\d)(?<parcela>\d{1,2})\s*\/\s*(?<total>\d{1,2})(?!\d)",
              RegexOptions.Compiled);
 
-        public List<LancamentoCartao> Parse(Stream arquivo)
+        public List<LancamentoFatura> Parse(Fatura fatura, string mesAno, Stream arquivo)
         {
             using var reader = new StreamReader(arquivo);
             using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -24,26 +24,21 @@ namespace Infrastructure.Parsers.Nubank
             csv.Context.RegisterClassMap<NubankCsvMap>();
 
             var registros = csv.GetRecords<NubankCsvRow>();
-            var lista = new List<LancamentoCartao>();
+            var lista = new List<LancamentoFatura>();
 
             foreach (var r in registros)
             {
                 var (parcela, total) = ExtrairParcela(r.Title);
 
-                lista.Add(new LancamentoCartao
-                {
-                    Data = DateTime.ParseExact(
-                        r.Date,
-                        "yyyy-MM-dd",
-                        CultureInfo.InvariantCulture),
-
-                    Descricao = LimparDescricao(r.Title),
-
-                    Valor = Math.Abs(r.Amount),
-
-                    NumeroParcela = parcela,
-                    TotalParcelas = total
-                });
+                lista.Add(new LancamentoFatura
+                (
+                    fatura,
+                    DateTime.ParseExact(r.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    LimparDescricao(r.Title),
+                    Math.Abs(r.Amount),
+                    parcela ?? 0,
+                    total ?? 0
+                ));
             }
 
             return lista;
